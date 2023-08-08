@@ -39,4 +39,4 @@ print(places[0].json())
 ```
 
 `lang` is language like ( "ar", "en", ...)
-`country_code` from [country_suffix_dict](https://www.github.com/3mora2/GoogleMapsPy/GoogleMapsPy/const.py)
+`country_code` from [country_suffix_dict](https://github.com/3mora2/GoogleMapsPy/blob/dfb5cb24324fc5664a53591932ae5b05ab219c24/GoogleMapspy/const.py#L98)
