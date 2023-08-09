@@ -5,7 +5,7 @@ import random
 import json
 import numpy as np
 import math
-
+# https://serpapi.com/maps-local-results
 # https://github.com/iewoai/GoogleMap_Spider/blob/master/main.py
 ######## 谷歌地图爬虫（requests版）
 ######## 目标：搜素company，改坐标，获取全球所有公司信息

@@ -41,3 +41,21 @@ va = {
     "google_place_id": ll[14][78]
 
 }
+
+ll = []
+var = {
+                    "contrib_url": ll[0][0],
+                    "contrib_name": ll[0][1],
+                    "contrib_profile": ll[0][2],
+                    "contrib_level": ll[12][0][0],
+                    "contrib_reviews_count": ll[12][1][1],
+                    "contrib_rate_count": ll[12][1][7],
+                    "create_at": ll[1],
+                    "review": ll[3],
+                    "rate": ll[4],
+                    "review_url": ll[18],
+                    "lang": ll[32],
+                    "place_name": ll[14][0][21][3][7][1],
+                    "likes": ll[16],
+                    "id": ll[61]
+                }
