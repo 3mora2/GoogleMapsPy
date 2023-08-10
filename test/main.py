@@ -35,7 +35,7 @@ url = (
 )
 # url = "https://www.google.com.hk/maps/place/{place}/@0,0,0z/data=!4m5!3m4!1s{longitude}!8m2!3d{latitude}!4d{location_code}"
 # url = f"https://www.google.com.hk/maps/place/{word}/@0,0,0z"
-
+print(url)
 headers = {
     "accept": "*/*",
     "referrer": "https://www.google.com/",

@@ -7,6 +7,7 @@ import numpy as np
 import math
 # https://serpapi.com/maps-local-results
 # https://github.com/iewoai/GoogleMap_Spider/blob/master/main.py
+# https://medium.com/@supun1001/how-to-generate-google-embed-links-programmatically-for-iframes-for-routes-only-d6dc225e59e8
 ######## 谷歌地图爬虫（requests版）
 ######## 目标：搜素company，改坐标，获取全球所有公司信息
 ###### 思路：从一点出发，选取该点最优Z（以整数调整），以该点的切片边长或1d表达式做距离，经纬等长移动度差，移动后的每一点重复该步骤。

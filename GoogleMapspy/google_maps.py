@@ -167,7 +167,14 @@ class GoogleMaps:
         1d:
         2d:
         3d:
-
+        1s0x0%3A0x1c13188527ff0c94
+        0x1c13188527ff0c94 -> 2022987617800227988
+        ast.literal_eval("0x1c13188527ff0c94")
+        https://google.com/maps?cid=2022987617800227988
+        %3A -> :
+        1s0x0:0x1c13188527ff0c94 -> 0x0 -> 0 : 0x1c13188527ff0c94 -> 2022987617800227988
+        1s = 0:2022987617800227988
+        
         """
         return (
             f"https://www.google.com/maps/preview/place?authuser=0&hl={self.hl}&gl={self.gl}&q={quote(place_name)}&pb=!1m11!1s0x0%3A0x1c13188527ff0c94!3m9!1m3"
