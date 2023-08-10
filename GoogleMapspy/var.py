@@ -2,6 +2,9 @@ class Place:
     def __init__(self, data):
         self.data = data
 
+    def __repr__(self):
+        return f"Place(name={self.name}, phone={self.phone})"
+
     @property
     def name(self):
         return self.data[11]
@@ -132,6 +135,9 @@ class Review:
     def __init__(self, data):
         self.data = data
 
+    def __repr__(self):
+        return f"Review(contrib_name={self.contrib_name}, review={self.review[:500]})"
+
     @property
     def contrib_url(self):
         return self.data[0][0]
@@ -162,7 +168,10 @@ class Review:
 
     @property
     def review(self):
-        return self.data[3]
+        if self.data[3]:
+            return self.data[3]
+
+        return ''
 
     @property
     def rate(self):
