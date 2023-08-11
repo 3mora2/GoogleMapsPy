@@ -7,7 +7,6 @@ from requests_html import HTMLSession
 from GoogleMapspy.function import get_1d, country_suffix_dict
 from GoogleMapspy.var import Place, Review
 from urllib.parse import quote
-from urllib.parse import urlparse, parse_qs, unquote
 
 ua = UserAgent()
 
@@ -136,7 +135,7 @@ class GoogleMaps:
 
             if not all_:
                 break
-            self.offset += self.p
+            offset += p
             sleep(sleep_time)
 
         return self.places

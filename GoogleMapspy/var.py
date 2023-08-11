@@ -108,6 +108,19 @@ class Place:
     def review_ids(self):
         return self.data[37][0][0][29]
 
+    @property
+    def url(self):
+        return self.data[42]
+
+    @property
+    def days(self):
+        d = []
+        for day in self.data[203][0]:
+            var = {"day_name": day[0], "day_id": day[1], "date": day[2],
+                   "from_to": {"text": day[3][0][0], "from": day[3][0][1][0][0], "to": day[3][0][1][1][0]}}
+            d.append(var)
+        return d
+
     def json(self):
         return {
             "expensive": self.expensive,
@@ -127,7 +140,8 @@ class Place:
             "search_google_url": self.search_google_url,
             "phone": self.phone,
             "google_place_id": self.google_place_id,
-            "review_ids": self.review_ids
+            "review_ids": self.review_ids,
+            "url":self.url
         }
 
 
@@ -197,6 +211,8 @@ class Review:
     def id(self):
         return self.data[61] if len(self.data) > 61 else None
 
+
+
     def json(self):
         return {
             "contrib_url": self.contrib_url,
@@ -212,5 +228,6 @@ class Review:
             "lang": self.lang,
             "place_name": self.place_name,
             "likes": self.likes,
-            "id": self.id
+            "id": self.id,
+
         }

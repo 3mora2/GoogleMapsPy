@@ -27,7 +27,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     package_dir={"": "."},
-    package_data={"GoogleMapsPY": ["*.md"]},
+    # package_data={"GoogleMapsPY": ["*.md"]},
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Intended Audience :: Developers",
