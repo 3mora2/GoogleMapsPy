@@ -141,7 +141,8 @@ class Place:
             "phone": self.phone,
             "google_place_id": self.google_place_id,
             "review_ids": self.review_ids,
-            "url":self.url
+            "url": self.url,
+            "days":self.days,
         }
 
 
@@ -210,8 +211,6 @@ class Review:
     @property
     def id(self):
         return self.data[61] if len(self.data) > 61 else None
-
-
 
     def json(self):
         return {

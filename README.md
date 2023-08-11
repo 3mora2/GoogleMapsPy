@@ -1,6 +1,6 @@
 # GoogleMapsPY
 
-GoogleMapsPY aim to scrape data from Google Maps without Google API
+GoogleMapsPY aim to scrape data from Google Maps without Google API or Browser
 
 
 ## Functions
@@ -74,3 +74,27 @@ url = "https://www.google.com/maps/place/%D9%86%D8%A7%D8%AF%D9%8A+%D8%A7%D9%84%D
 for i, v in enumerate(maps.get_reviews(url=url, sleep_time=1)):
     print(i, v)
 ```
+
+### Place object property:
+| name              | type  | return                               |
+|-------------------|-------|--------------------------------------|
+| expensive         | str   | expensive level                      |
+| reviews           | dict  | reviews url, count                   |
+| rate              | float | rate                                 |
+| website           | dict  | website url                          |
+| location          | dict  | location dict of latitude, longitude |
+| name              | str   | name of place                        |
+| category          | list  | category                             |
+| type2             | list  | type2                                |
+| address           | dict  | address                              |
+| images            | dict  | images (main image)                  |
+| tags              | list  | tags                                 |
+| short_tags        | list  | short_tags                           |
+| lang              | str   | language                             |
+| lang_code         | str   | language_code                        |
+| search_google_url | str   | search_google_url                    |
+| phone             | str   | phone                                |
+| google_place_id   | str   | google_place_id                      |
+| review_ids        | list  | review_ids                           |
+| url               | str   | url                                  |
+| days              | list  | open in days                         |
