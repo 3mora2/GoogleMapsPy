@@ -10,7 +10,7 @@ GoogleMapsPY aim to scrape data from Google Maps without Google API or Browser
 | Search and return Places | ✔ |
 | Get Place by name        | ✔ |
 | Get Reviews              | ✔ |
-|                          |   |
+| Get Images               |   |
 
 
 ### Installation
@@ -41,7 +41,7 @@ for index, place in enumerate(maps.search(keyword)):
 ```
 
 ### Get Place
-
+by place_name
 `place_name` must be accurate
 ```python
 from GoogleMapspy import GoogleMaps
@@ -51,9 +51,19 @@ place_name = "مطعم الكتكوت للمشويات، مدينة الروضة
 place = maps.get_place(place_name)
 print(place)
 ```
+or by google maps place url
+
+```python
+from GoogleMapspy import GoogleMaps
+
+maps = GoogleMaps(lang="en", country_code="eg")
+url = "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%B5%D8%A7%D9%81%D9%89+%D8%A7%D9%84%D9%85%D8%A3%D9%83%D9%88%D9%84%D8%A7%D8%AA+%D8%A7%D9%84%D8%A8%D8%AD%D8%B1%D9%8A%D8%A9%E2%80%AD/@31.3236418,31.7580646,17z/data=!4m17!1m10!3m9!1s0x14f9e7860c2edadf:0xe7ee7daab22713f!2z2YXYt9i52YUg2KfZhNmD2KrZg9mI2Kog2YTZhNmF2LTZiNmK2KfYqg!8m2!3d31.3279843!4d31.7535306!10e5!14m1!1BCgIgAQ!16s%2Fg%2F11rn4ndyt8!3m5!1s0x14f9e72c1e2e1beb:0x656909fce8b20df!8m2!3d31.3237011!4d31.7580212!16s%2Fg%2F11hzjy_4bd?entry=ttu"
+place = maps.get_place(url=url)
+print(place)
+```
 
 ### Get Reviews
-pass ids
+by ids
 ```python
 from GoogleMapspy import GoogleMaps
 
@@ -65,7 +75,7 @@ ids = place.review_ids  # ["1511502518116541527", "2022987617800227988"]
 for i, review in enumerate(maps.get_reviews(ids=ids)):
     print(i, review)
 ```
-or google maps place url
+or by google maps place url
 ```python
 from GoogleMapspy import GoogleMaps
 
@@ -74,6 +84,21 @@ url = "https://www.google.com/maps/place/%D9%86%D8%A7%D8%AF%D9%8A+%D8%A7%D9%84%D
 for i, v in enumerate(maps.get_reviews(url=url, sleep_time=1)):
     print(i, v)
 ```
+
+### Get Images
+by ids
+```python
+from GoogleMapspy import GoogleMaps
+
+maps = GoogleMaps(lang="en", country_code="eg")
+place_name = "مطعم الكتكوت للمشويات، مدينة الروضة، مركز فارسكور"
+place = maps.get_place(place_name)
+print(place)
+ids = place.review_ids  # ["1511502518116541527", "2022987617800227988"]
+images = maps.get_images(ids)
+print(images)
+```
+
 
 ### Place object property:
 | name              | type  | return                               |

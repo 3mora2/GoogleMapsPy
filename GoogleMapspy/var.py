@@ -17,6 +17,13 @@ class Place:
             return self.data[3][0]
 
     @property
+    def all_phones(self):
+        if self.data[178]:
+            return self.data[178]
+        elif self.data[3]:
+            return self.data[3]
+
+    @property
     def reviews(self) -> dict:
         if self.data[4]:
             return {
@@ -109,6 +116,10 @@ class Place:
         return self.data[37][0][0][29]
 
     @property
+    def hex_ids(self):
+        return self.data[10]
+
+    @property
     def url(self):
         return self.data[42]
 
@@ -142,7 +153,7 @@ class Place:
             "google_place_id": self.google_place_id,
             "review_ids": self.review_ids,
             "url": self.url,
-            "days":self.days,
+            "days": self.days,
         }
 
 
@@ -228,5 +239,4 @@ class Review:
             "place_name": self.place_name,
             "likes": self.likes,
             "id": self.id,
-
         }
