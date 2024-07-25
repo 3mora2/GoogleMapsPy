@@ -1,5 +1,88 @@
 class Place:
     def __init__(self, data):
+        """
+
+        Index 2>1>0: plus_code ???
+        Index 2>0: street
+        Index 2>1: district
+        Index 2>2: city
+        Index 3: phones ???
+
+        Index 4: reviews
+        Index 4>7: rating
+        Index 4>8: reviews_count
+        Index 4>2: expensive
+
+        Index 7: site
+        Index 7>0: site url
+        Index 7>1: site title
+
+        Index 9: latitude(9>2),longitude(9>3)
+        Index 10: google_id, hex_ids
+        Index 11: name
+        Index 13: type ??
+        Index 13: subtypes
+        Index 14: district
+        Index 18: full address
+        Index 30: Time Zone: 'Asia/Riyadh'
+        Index 32>1>1: description
+        Index 33: Service Options
+        Index 34>1: working_hours
+
+        Index 37>0: images
+        Index 37>0>0>29: review_ids
+        Index 37>1: photos_count
+
+        Index 39: full_address
+        Index 42: url
+        Index 52>3: reviews_per_score
+
+        Index 57: owner(https://www.google.com/maps/contrib/owner_id)
+        Index 76: type2 ???
+        Index 78: google_place_id
+
+        Index 82: address_split:list
+
+        Index 84>0>0: popular_times
+
+        Index 100: about (Serves brunch, Service options), tags
+        Index 107: language
+        Index 110: language_code
+        Index 117: typical_time_spent
+
+
+        Index 142: short_tags
+
+        Index 153>0: reviews(tags) list
+        Index 164>0>1: category
+        Index 166: address_country_city:str
+
+        Index 174: search_google_url
+
+        Index 178: phones
+
+        Index 183: address ?? 0 Or 1
+        Index 183>1>0: district
+        Index 183>1>1: street ???
+        Index 183>1>2: street ???
+        Index 183>1>3: city
+        Index 183>1>4: postal_code ???
+        Index 183>1>5: state
+        Index 183>1>6: country_code
+        Index 183>2>1>0: plus_code
+
+        Index 203>0: working_hours, days
+
+
+
+
+
+
+
+
+
+
+        """
         self.data = data
 
     def __repr__(self):
