@@ -1,17 +1,29 @@
+def get_index(data: list, *args, default=None):
+    val = data
+    for index in args:
+        if val is None or len(val) <= index:
+            return default
+        val = val[index]
+    return val
+
+
 class Place:
     def __init__(self, data):
         """
-
-        Index 2>1>0: plus_code ???
         Index 2>0: street
         Index 2>1: district
         Index 2>2: city
+        Index 2>3: ... last part address
+
         Index 3: phones ???
 
         Index 4: reviews
+        Index 4>2: expensive
+        Index 4>3: reviews url, text, ...
         Index 4>7: rating
         Index 4>8: reviews_count
-        Index 4>2: expensive
+        Index 4>10: expensive text
+
 
         Index 7: site
         Index 7>0: site url
@@ -20,10 +32,10 @@ class Place:
         Index 9: latitude(9>2),longitude(9>3)
         Index 10: google_id, hex_ids
         Index 11: name
-        Index 13: type ??
-        Index 13: subtypes
+        Index 13 > 0: type
+        Index 13: subtypes list 'Pizza restaurant', 'Fast food restaurant', 'Restaurant']
         Index 14: district
-        Index 18: full address
+        Index 18: full address + name
         Index 30: Time Zone: 'Asia/Riyadh'
         Index 32>1>1: description
         Index 33: Service Options
@@ -38,7 +50,7 @@ class Place:
         Index 52>3: reviews_per_score
 
         Index 57: owner(https://www.google.com/maps/contrib/owner_id)
-        Index 76: type2 ???
+        Index 76: type2  list[list[str]] >> [['pizza_restaurant', 'Pizza'], ['fast_food_restaurant', 'Fast Food'], ['restaurant']]
         Index 78: google_place_id
 
         Index 82: address_split:list
@@ -60,8 +72,12 @@ class Place:
         Index 174: search_google_url
 
         Index 178: phones
+        Index 178>0>0: phones text '+20 55 2366951'
+        Index 178>0>1: list phones list[list[str, index]] with + and without +
+        Index 178>0>3: phones '+20552366951'
+        Index 178>0>5>0: phones 'tel:+20552366951'
 
-        Index 183: address ?? 0 Or 1
+        Index 183: address
         Index 183>1>0: district
         Index 183>1>1: street ???
         Index 183>1>2: street ???
@@ -70,34 +86,85 @@ class Place:
         Index 183>1>5: state
         Index 183>1>6: country_code
         Index 183>2>1>0: plus_code
-
         Index 203>0: working_hours, days
-
-
-
-
-
-
-
-
-
-
         """
         self.data = data
 
+        self.rating: float = get_index(self.data, 4, 7, )
+        self.reviews_count: int = get_index(self.data, 4, 8, )
+        self.expensive_text: str = get_index(self.data, 4, 10, )
+
+        self.site_url: str = get_index(self.data, 7, 0, )
+        self.site_text: str = get_index(self.data, 7, 1, )
+
+        self.latitude: float = get_index(self.data, 9, 2, )
+        self.longitude: float = get_index(self.data, 9, 3, )
+        self.google_id: str = get_index(self.data, 10, )
+        self.hex_ids: str = get_index(self.data, 10, )
+
+        self.title: str = get_index(self.data, 11, )
+        self.type: str = get_index(self.data, 13, 0, )
+        self.subtypes: list[str] = get_index(self.data, 13, default=[])
+        self.full_address_name: str = get_index(self.data, 18, )
+        self.time_zone: str = get_index(self.data, 30, )
+        self.description: str = get_index(self.data, 32, 1, 1, )
+        # TODO: Service
+        # TODO: working_hours
+        # TODO: images
+        self.photos_count: int = get_index(self.data, 37, 1, )
+        self.full_address: str = get_index(self.data, 39, )
+        self.url: str = get_index(self.data, 42, )
+        # TODO: reviews_per_score
+        # TODO: owner
+        self.type2: list[list[str]] = get_index(self.data, 76, default=[])
+        self.google_place_id: str = get_index(self.data, 78, )
+        self.address_split: list = get_index(self.data, 82, default=[])
+        # TODO: popular_times
+        # TODO: about (Serves brunch, Service options), tags
+        self.language: str = get_index(self.data, 110, )
+        self.language_code: str = get_index(self.data, 117, )
+        # TODO: typical_time_spent
+        self.short_tags: list = get_index(self.data, 142, )
+        # TODO: reviews(tags) list
+        self.category: str = get_index(self.data, 164, 0, 1, )
+        self.address_country_city: str = get_index(self.data, 166, )
+        self.search_google_url: str = get_index(self.data, 174, )
+        self.phone: str = get_index(self.data, 178, 0, 3, ) or get_index(self.data, 3, 0, )
+        self.phone_format: str = get_index(self.data, 178, 0, 0)
+        self.district: str = get_index(self.data, 183, 1, 0, )
+        self.street: str = get_index(self.data, 183, 1, 1, )
+        self.street_: str = get_index(self.data, 183, 1, 2, )
+        self.city: str = get_index(self.data, 183, 1, 3, )
+        self.postal_code: str = get_index(self.data, 183, 1, 4, )
+        self.state: str = get_index(self.data, 183, 1, 5, )
+        self.country_code: str = get_index(self.data, 183, 1, 6, )
+        self.plus_code: str = get_index(self.data, 183, 2, 1, 0, )
+        # TODO: working_hours, days
+
     def __repr__(self):
-        return f"Place(name={self.name}, phone={self.phone})"
+        return ('Place('
+                f'title="{self.title}", '
+                f'phone="{self.phone}", '
+                f'category="{self.category}" ,'
+                f'type="{self.type}" ,'
+                f'rating="{self.rating}" ,'
+                f'state="{self.state}" ,'
+                f'city="{self.city}" ,'
+                f'district="{self.district}" ,'
+                f'street="{self.street}" ,'
+                f'street_="{self.street_}" ,'
+                ')')
 
     @property
     def name(self):
         return self.data[11]
 
-    @property
-    def phone(self):
-        if self.data[178]:
-            return self.data[178][0][3]
-        elif self.data[3]:
-            return self.data[3][0]
+    # @property
+    # def phone(self):
+    #     if self.data[178]:
+    #         return self.data[178][0][3]
+    #     elif self.data[3]:
+    #         return self.data[3][0]
 
     @property
     def all_phones(self):
@@ -143,12 +210,12 @@ class Place:
         return {}
 
     @property
-    def category(self) -> list:
-        return self.data[13]
+    # def category(self) -> list:
+    #     return self.data[13]
 
-    @property
-    def type2(self) -> list:
-        return self.data[76]
+    # @property
+    # def type2(self) -> list:
+    #     return self.data[76]
 
     @property
     def address(self) -> dict:
@@ -174,37 +241,37 @@ class Place:
     def tags(self):
         return self.data[100]
 
-    @property
-    def short_tags(self):
-        return self.data[142]
+    # @property
+    # def short_tags(self):
+    #     return self.data[142]
 
     @property
-    def language(self):
-        return self.data[107]
+    # def language(self):
+    #     return self.data[107]
+    #
+    # @property
+    # def language_code(self):
+    #     return self.data[110]
 
-    @property
-    def language_code(self):
-        return self.data[110]
+    # @property
+    # def search_google_url(self):
+    #     return self.data[174]
 
-    @property
-    def search_google_url(self):
-        return self.data[174]
-
-    @property
-    def google_place_id(self):
-        return self.data[78]
+    # @property
+    # def google_place_id(self):
+    #     return self.data[78]
 
     @property
     def review_ids(self):
         return self.data[37][0][0][29]
 
-    @property
-    def hex_ids(self):
-        return self.data[10]
+    # @property
+    # def hex_ids(self):
+    #     return self.data[10]
 
-    @property
-    def url(self):
-        return self.data[42]
+    # @property
+    # def url(self):
+    #     return self.data[42]
 
     @property
     def days(self):

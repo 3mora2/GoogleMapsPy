@@ -124,3 +124,4 @@ dmypy.json
 
 
 /test/sa_json
+test/google_db_1.db
