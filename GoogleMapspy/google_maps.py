@@ -1,10 +1,13 @@
 import json
+import logging
 import re
 from time import sleep
+
+import requests
 from fake_useragent import UserAgent
 from requests_html import HTMLSession
 from GoogleMapspy.function import get_1d, country_suffix_dict
-from GoogleMapspy.var import Place, Review
+from GoogleMapspy.var import Place, Review, get_index
 from urllib.parse import quote
 
 ua = UserAgent()
@@ -17,6 +20,8 @@ class GoogleMaps:
     def __init__(self, latitude: str = "-200", longitude: str = "-200", lang: str = "en", country_code: str = "eg",
                  zoom=None,
                  zoom_index=9):
+        logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+        self.logger = logging.getLogger(name="GoogleMapsPy")
         self.latitude = latitude
         self.longitude = longitude
         self.keyword = ""
@@ -145,78 +150,117 @@ class GoogleMaps:
             return data[0][1][1:], 'list'
         return [], None
 
-    def search(self, keyword, all_=True, clear_old=False, offset=0, p=100, streem=True, sleep_time: int = 5,
-               add_oq=True) -> list[Place]:
+    def search(self, keyword: str, all_: bool = True, clear_old: bool = True, offset: int = 0, per_page: int = 100,
+               streem: bool = True, sleep_time: float = 4,
+               add_oq: bool = True) -> list[Place]:
+        """
 
-        def muns_p():
-            nonlocal p
-            if p > 50:
-                p -= 40
-            elif p > 30:
-                p -= 20
-            elif p > 10:
-                p -= 10
-            else:
-                p -= 3
-            print("P", p)
-            sleep(sleep_time)
+        :param keyword:
+        :param all_:
+        :param clear_old:
+        :param offset:
+        :param per_page:
+        :param streem:
+        :param sleep_time:
+        :param add_oq:
+        :return:
+        """
+
+        # auto minus per_page to get all data
+        # 100/v(4) >> 25/v >> ... >> 1 or 0
+        def minus_per_page(v=4):
+            nonlocal per_page
+            per_page = per_page // v
+            return per_page
 
         if clear_old:
             self.places = []
         self.keyword = keyword
 
         if not self.latitude or not self.longitude:
+            self.logger.info("Set Latitude And Longitude")
             self.__set_latitude(keyword)
 
+        error = 0
         while True:
+            len_data = 0
 
-            if p <= 0:
+            if per_page <= 0:
                 break
-            r = self.session.request("GET", **self._url_search(keyword, p, offset, add_oq=add_oq),
-                                     headers=self.headers)
 
+            # HTTPError: 429 Client Error: Too Many Requests for url: https://www.google.com/sorry/index?continue=...
+            # TODO: Solve Google Captcha
+            try:
+                self.logger.info(f"sleep: {sleep_time}")
+                sleep(sleep_time)
+                self.logger.info(f"request:{'GET'}, Per Page:{per_page}, Offset:{offset}, Keyword:{keyword}")
+                r = self.session.request("GET",
+                                         **self._url_search(keyword, per_page, offset, add_oq=add_oq),
+                                         headers=self.headers, timeout=60)
+                self.logger.info(f"request: {r}")
+            except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
+                self.logger.error(e)
+                self.logger.info(f"wait 10")
+                sleep(10)
+                error += 1
+                continue
+            except Exception as e:
+                self.logger.error(e)
+                self.logger.info("wait 10")
+                sleep(10)
+                error += 1
+                continue
+
+            error = 0
             r.raise_for_status()
             list_data = json.loads(r.text[5:])
             data, type_ = self.__prepare_data(list_data)
-            if type_ == "place":
-                if data[-1][-1] == 0:
-                    if p <= 0:
-                        break
-                    muns_p()
-                    continue
-                place = Place(data[14])
-
-                self.places.append(place)
-                yield place
-                break
-
-            elif type_ == "list":
-                for ll in data:
-                    if data[-1][-1] == 0:
-                        if p <= 0:
+            try:
+                if type_ == "place":
+                    len_data = 1
+                    if data[-1][-1] == 0 or not get_index(data, 14):
+                        self.logger.info(f"No Place, {per_page} {type_}", )
+                        if per_page <= 1:
                             break
-                        muns_p()
+                        minus_per_page()
                         continue
-                    place = Place(ll[14])
+
+                    place = Place(data[14])
+
                     self.places.append(place)
-                    if streem:
-                        yield place
-                    # print(len(self.Places), place.name, place.phone)
+                    yield place
 
-            else:
-                if p <= 0:
                     break
-                muns_p()
-                continue
 
-            # # check if their data
-            # is len(list_data[0][1][1:]) == 0:
-            #     break
+                elif type_ == "list":
+
+                    len_data = len(data)
+                    self.logger.info(f"{len_data=}", )
+                    for ii, ll in enumerate(data, 1):
+                        if data[-1][-1] == 0 or not get_index(ll, 14):
+                            self.logger.info(f"No Place, {per_page} {type_}", )
+
+                            continue
+
+                        place = Place(ll[14])
+                        self.places.append(place)
+                        if streem:
+                            yield place
+
+                else:
+                    self.logger.error(f"{type_=}, {per_page=}, {data=}")
+
+                    break
+
+            except Exception as e:
+                self.logger.error(e)
+                raise e
 
             if not all_:
                 break
-            offset += p
-            sleep(sleep_time)
+
+            # offset += per_page
+            offset += len_data
 
         return self.places
 

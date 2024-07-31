@@ -114,6 +114,7 @@ class Place:
         self.photos_count: int = get_index(self.data, 37, 1, )
         self.full_address: str = get_index(self.data, 39, )
         self.url: str = get_index(self.data, 42, )
+        "https://www.google.com/maps/place/data=!4m6!3m5!1s0x14f7f1aaacd1b6ab:0x9537d45cb200e0ee!8m2!3d30.5889755!4d31.4919853!16s%2Fg%2F1tj70ytd?entry=ttu"
         # TODO: reviews_per_score
         # TODO: owner
         self.type2: list[list[str]] = get_index(self.data, 76, default=[])
