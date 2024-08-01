@@ -5,7 +5,7 @@ from setuptools import setup
 long_description = open("README.md", encoding="utf-8").read()
 description = "GoogleMapsPY aim to scrape data from Google Maps without Google API"
 
-version = "0.1"
+version = "1.0"
 
 
 setup(
@@ -19,10 +19,9 @@ setup(
     url="https://github.com/3mora2/GoogleMapsPY",
     project_urls={"Bug Report": "https://github.com/3mora2/GoogleMapsPY/issues/new"},
     install_requires=[
-        "requests-html",
+        "requests",
         "numpy",
         "fake-useragent",
-        "geopy",
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",

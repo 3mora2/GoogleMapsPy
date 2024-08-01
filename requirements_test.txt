@@ -2,3 +2,4 @@ setuptools
 requests
 fake_useragent
 numpy
+sqlalchemy

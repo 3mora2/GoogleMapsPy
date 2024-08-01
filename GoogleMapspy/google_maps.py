@@ -2,13 +2,11 @@ import json
 import logging
 import re
 from time import sleep
-
 import requests
-from fake_useragent import UserAgent
-from requests_html import HTMLSession
 from GoogleMapspy.function import get_1d, country_suffix_dict
 from GoogleMapspy.var import Place, Review, get_index
-from urllib.parse import quote
+from urllib.parse import quote_plus
+from fake_useragent import UserAgent
 
 ua = UserAgent()
 
@@ -18,8 +16,8 @@ GOOGLE_URL = 'https://www.google.com'
 class GoogleMaps:
 
     def __init__(self, latitude: str = "-200", longitude: str = "-200", lang: str = "en", country_code: str = "eg",
-                 zoom=None,
-                 zoom_index=9):
+                 zoom: float = None, zoom_index: int = 9, session: requests.Session = None):
+
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
         self.logger = logging.getLogger(name="GoogleMapsPy")
         self.latitude = latitude
@@ -28,8 +26,10 @@ class GoogleMaps:
         self.place_name = ""
         self.zoom = zoom or get_1d(0).get(zoom_index)
         self.hl = lang
+        # if country_code not in country_suffix_dict:
+        #     raise Exception("Not Valid country_code")
         self.gl = country_code
-        self.session = HTMLSession()
+        self.session = session or requests.Session()
         self.places = []
         self.reviews = []
 
@@ -306,30 +306,6 @@ class GoogleMaps:
             q=oq: keyword
 
         """
-        # url = f"{GOOGLE_URL}/search?"
-        # parm = {
-        #     "tbm": "map",
-        #     "authuser": "0",
-        #     "hl": self.hl,
-        #     "gl": self.gl,
-        #     "q": keyword,
-        #     "oq": keyword if add_oq else "",
-        #     "pb": (
-        #         "!4m12!1m3!1d{self.zoom}!2d{self.longitude}!3d{self.latitude}!2m3!1f0!2f0!3f0!3m2!1i1536!2i686!4f13.1!7i{p}!8i{offset}"
-        #         "!10b1!12m16!1m1!18b1!2m3!5m1!6e2!20e3!10b1!12b1!13b1!16b1!17m1!3e1!20m3!5e2!6b1!14b1!19m4!2m3!1i360!2i120!4i8"
-        #         "!20m57!2m2!1i203!2i100!3m2!2i4!5b1!6m6!1m2!1i86!2i86!1m2!1i408!2i240!7m42!1m3!1e1!2b0!3e3!1m3!1e2!2b1!3e2!1m3"
-        #         "!1e2!2b0!3e3!1m3!1e8!2b0!3e3!1m3!1e10!2b0!3e3!1m3!1e10!2b1!3e2!1m3!1e9!2b1!3e2!1m3!1e10!2b0!3e3!1m3!1e10!2b1!3e2"
-        #         "!1m3!1e10!2b0!3e4!2b1!4b1!9b0!22m6!1stRLSZM7lG--0kdUPh8SyiAM:4!2s1i:0,t:11886,p:tRLSZM7lG"
-        #         "--0kdUPh8SyiAM:4!7e81!12e5!17stRLSZM7lG--0kdUPh8SyiAM:28!18e15!24m81!1m29!13m9!2b1!3b1!4b1!6i1!8b1!9b1!14b1"
-        #         "!20b1!25b1!18m18!3b1!4b1!5b1!6b1!9b1!12b1!13b1!14b1!15b1!17b1!20b1!21b1!22b0!25b1!27m1!1b0!28b0!30b0!2b1!5m5!2b1"
-        #         "!5b1!6b1!7b1!10b1!10m1!8e3!11m1!3e1!14m1!3b1!17b1!20m2!1e3!1e6!24b1!25b1!26b1!29b1!30m1!2b1!36b1!39m3!2m2!2i1"
-        #         "!3i1!43b1!52b1!54m1!1b1!55b1!56m2!1b1!3b1!65m5!3m4!1m3!1m2!1i224!2i298!71b1!72m4!1m2!3b1!5b1!4b1!89b1!103b1"
-        #         "!113b1!26m4!2m3!1i80!2i92!4i8!30m28!1m6!1m2!1i0!2i0!2m2!1i50!2i686!1m6!1m2!1i1006!2i0!2m2!1i1536!2i686!1m6!1m2"
-        #         "!1i0!2i0!2m2!1i1536!2i20!1m6!1m2!1i0!2i666!2m2!1i1536!2i686!34m18!2b1!3b1!4b1!6b1!8m6!1b1!3b1!4b1!5b1!6b1!7b1"
-        #         "!9b1!12b1!14b1!20b1!23b1!25b1!26b1!37m1!1e81!42b1!47m0!49m7!3b1!6m2!1b1!2b1!7m2!1e3!2b1!50m4!2e2!3m2!1b1!3b1"
-        #         "!61b1!67m2!7b1!10b1!69i657")
-        # }
-        # return {"url": url, "params": parm}
         return {"url": (
             f"{GOOGLE_URL}/search?tbm=map&authuser=0&hl={self.hl}&gl={self.gl}&q={keyword}&"
             # f'{"oq={keyword}&" if add_oq else ""}'
@@ -354,7 +330,7 @@ class GoogleMaps:
             raise Exception("not valid url")
         place_name = self.__get_name_from_url(url)
         return (
-            f"{GOOGLE_URL}/maps/preview/place?authuser=0&hl={self.hl}&gl={self.gl}&q={quote(place_name)}&pb=!1m11!1s{id1_id2}!3m9!1m3"
+            f"{GOOGLE_URL}/maps/preview/place?authuser=0&hl={self.hl}&gl={self.gl}&q={quote_plus(place_name)}&pb=!1m11!1s{id1_id2}!3m9!1m3"
             f"!1d{self.zoom}!2d{self.longitude}!3d{self.latitude}!2m0!3m2!1i1536!2i686!4f13.1!12m4!2m3!1i360!2i120!4i8!13m57!2m2"
             "!1i203!2i100!3m2!2i4!5b1!6m6!1m2!1i86!2i86!1m2!1i408!2i240!7m42!1m3!1e1!2b0!3e3!1m3!1e2!2b1!3e2!1m3!1e2!2b0!3e3"
             "!1m3!1e8!2b0!3e3!1m3!1e10!2b0!3e3!1m3!1e10!2b1!3e2!1m3!1e9!2b1!3e2!1m3!1e10!2b0!3e3!1m3!1e10!2b1!3e2!1m3!1e10"
