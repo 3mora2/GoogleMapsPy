@@ -240,8 +240,12 @@ class Place:
     @property
     def images(self) -> dict:
         return {
-            "main": self.data[37][0][0][6][0]
+            "main": get_index(self.data, 37, 0, 0, 6, 0)
         }
+    @property
+    def main_image(self) -> str:
+        return get_index(self.data, 37, 0, 0, 6, 0)
+
 
     @property
     def tags(self):
@@ -282,10 +286,13 @@ class Place:
     @property
     def days(self):
         d = []
-        for day in self.data[203][0]:
-            var = {"day_name": day[0], "day_id": day[1], "date": day[2],
-                   "from_to": {"text": day[3][0][0], "from": day[3][0][1][0][0], "to": day[3][0][1][1][0]}}
-            d.append(var)
+        __days = get_index(self.data, 203, 0, default=[])
+        if __days:
+            for day in __days:
+                var = {"day_name": day[0], "day_id": day[1], "date": day[2],
+                       "from_to": {"text": get_index(day, 3, 0, 0), "from": get_index(day, 3, 0, 1, 0, 0),
+                                   "to": get_index(day, 3, 0, 1, 1, 0)}}
+                d.append(var)
         return d
 
     def json(self):

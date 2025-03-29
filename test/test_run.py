@@ -1,10 +1,56 @@
-from GoogleMapspy import GoogleMaps
+import os.path
+from datetime import datetime
 
+from GoogleMapspy import GoogleMaps
+import pandas
+
+file_save = os.path.join(f'Google Map - {datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.xlsx')
 maps = GoogleMaps(lang="ar", country_code="eg")
 
-# keyword = "مطعم في الرياض"
-# for index, place in enumerate(maps.search(keyword)):
-#     print(index, place)
+keyword = "مطعم في الرياض"
+places = []
+for index, place in enumerate(maps.search(keyword)):
+    print(index, place)
+    places.append(
+        {
+            "name": place.name,
+            "category": place.category,
+
+            "type": place.type,
+            "subtypes": ", ".join(place.subtypes),
+
+            "phone": place.phone,
+            "phone_format": place.phone_format,
+            "description": place.description,
+            "district": place.district,
+            "street": place.street,
+            "city": place.city,
+            "postal_code": place.postal_code,
+            "plus_code": place.plus_code,
+            "country_code": place.country_code,
+            "rate": place.rate,
+            "expensive": place.expensive,
+            "reviews": place.reviews,
+            "site_url": place.site_url,
+            "site_text": place.site_text,
+
+            "full_address_name": place.full_address_name,
+            "location": place.location,
+            "url": place.url,
+            "main_image": place.main_image,
+            "lang": place.language,
+            "lang_code": place.language_code,
+            "search_google_url": place.search_google_url,
+            "google_place_id": place.google_place_id,
+            "type2": place.type2,
+            "website": place.website.get("url"),
+            "tags": place.tags,
+            "short_tags": place.short_tags,
+            "days": place.days,
+        }
+    )
+
+pandas.DataFrame(places).to_excel(file_save, index=False)
 #
 # places = maps.search(keyword, streem=False, sleep_time=0)
 # print(places)
