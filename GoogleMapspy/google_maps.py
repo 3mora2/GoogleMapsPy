@@ -237,7 +237,7 @@ class GoogleMaps:
                     len_data = len(data)
                     self.logger.info(f"{len_data=}", )
                     for ii, ll in enumerate(data, 1):
-                        if data[-1][-1] == 0 or not get_index(ll, 14):
+                        if data[-1][-1] == 0 or not get_index(ll, 14) or not get_index(get_index(ll, 14), 11):
                             self.logger.info(f"No Place, {per_page} {type_}", )
 
                             continue
