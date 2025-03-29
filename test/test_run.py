@@ -4,10 +4,14 @@ from datetime import datetime
 from GoogleMapspy import GoogleMaps
 import pandas
 
+# TODO: Change Here
+keyword = "مطعم في الرياض"
+
+
 file_save = os.path.join(f'Google Map - {datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.xlsx')
 maps = GoogleMaps(lang="ar", country_code="eg")
 
-keyword = "مطعم في الرياض"
+
 places = []
 for index, place in enumerate(maps.search(keyword)):
     print(index, place)
